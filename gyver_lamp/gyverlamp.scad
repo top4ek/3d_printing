@@ -191,7 +191,7 @@ module base() {
 
 module bolt(hull = 0) {
   length = base_radius - inner_base_radius + 5;
-  cylinder(h = length - 2, r = 2, $fn = 100);
+  cylinder(h = length - 3, r = 2, $fn = 100);
   if (hull) {
     translate([0, 0, 5])
       cylinder(h = length - 5, r = 2.5 + hull, $fn = 100);
@@ -205,20 +205,25 @@ module bolt(hull = 0) {
 
   translate([0,0,-2 - hull])
     cylinder(h = 2 + hull, r1 = 0, r2 = 2 + hull / 2, $fn = 100);
-  difference() {
-    translate([0, 0, length - 5])
-      cylinder(h = 5, r1 = 0 + hull / 2, r2 = 5 + hull / 2, $fn = 100);
-    if (hull == 0) {
-      translate([-3.2, -0.5, length - 1.5])
-        cube([6.3, 1, 2]);
-      translate([-0.5, -3.2, length - 1.5])
-        cube([1,6.3,2]);
+  translate([0, 0, length - 5])
+    difference() {
+      cylinder(h = 5, r1 = 1 + hull / 2, r2 = 5 + hull / 2, $fn = 100);
+      if (hull == 0) {
+        union() {
+          difference() {
+            cylinder(h = 5, r1 = hull / 2, r2 = 4 + hull / 2, $fn = 100);
+            translate([0.5, 0.5, 0])
+              cube([5, 5, 5]);
+            translate([-5.5, -5.5, 0])
+              cube([5, 5, 5]);
+          }
+        }
+      }
     }
-  }
 }
 
-base();
-translate([0, 0, 3]) inner_base();
-translate([0, 0, height + 4]) rotate([0,180,0]) cap();
-translate([0, 0, 3]) shade();
+// base();
+// translate([0, 0, 3]) inner_base();
+// translate([0, 0, height + 4]) rotate([0,180,0]) cap();
+// translate([0, 0, 3]) shade();
 translate([5 - inner_base_radius, 0, 7]) rotate([-90,0,90]) bolt();
