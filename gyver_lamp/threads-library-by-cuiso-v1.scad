@@ -2,6 +2,34 @@
 "OpenScad library. Threads for screws and nuts V1" 
 by ANDRES ROMAN (AKA Cuiso) September 2018
 
+-> V1.2 30/03/2021 Change Log:
+- Since OpenScad version 2021.01 version 1.1 of this library stopped with error. 
+The necessary modifications have been made in this version 1.2 
+so that it also works with OpenScad 2021.01.
+- Due to these necessary modifications, unfortunately now the preview 
+time has increased slightly. 
+- Remember that if necessary you can increase the speed for previewing and 
+rendering using the functions with full parameters and specifying a 
+smaller number of the "divs" parameter.
+If you prefer, you can also improve the speed at a 
+general level by changing the variable "stddivs" 
+located on line 167, increasing this variable increases the 
+preview and rendering time (and increases the resolution), 
+decreasing the value of this variable decreases the time 
+preview and the resolution is lowered. 
+The default value of 50 is generally adequate and in 
+most cases you don't need to worry about this unless 
+your computer is really slow, or you want to get really large diameter threads.
+This version continues to be compatible with OpenScad versions prior to 2021.01.
+- Some warnings that did not affect operation have been removed.
+- Some "echo" that did not affect operation have been removed. 
+- This version is completely compatible with your projects made 
+with previous versions, the name of the library "threads-library-by-cuiso-v1.scad" 
+has been kept so you do not have to change anything in your source code, you only 
+have to replace the old file "threads-library-by-cuiso-v1.scad" by the new 
+"threads-library-by-cuiso-v1.scad" and you are ready to work with OpenScad 2021.01.
+- Happy designing !!!
+
 -> V1.1 23/08/2019 Change Log:
 -Fixed bug. Using fullparms functions with "divs" no divider of 360 (200 for example) the thread could be incomplete. Now you can use any number of "divs" without problem.
 -A small improvement. Now the diameter reductions at the beginning of the screw for easy entry are created with the same level of detail as the rest of the screw.
@@ -98,8 +126,10 @@ SOME NOTES:
 - At first preview(F5) of the design may appear in console a lot of messages:
 "PolySet has nonplanar faces. Attempting alternate construction"
 simply ignore those messages, they are not a problem.
+In versión 1.2 these messages no longer appear.
 
-- I have no lag problems in preview(F5) mode during the test of this library. If you are suffering lag problems in preview you can try to un-comment the "render()" al lines 254 and 261.  
+- I have no lag problems in preview(F5) mode during the test of this library. If you are suffering lag problems in preview you can try to un-comment the "render()" al lines 286 and 293.
+  You can also try decreasing the value of the stddivs variable on line 169 (50 is the default value).
 
 - This library uses by default PITCH values: 
   DIAMETER    PITCH_VALUE
@@ -136,11 +166,13 @@ thread_for_nut(diameter=diameter, length=lengthnut);
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+stddivs=50;
+
 module thread_for_screw(diameter, length)
 {
 stdpitch=get_std_pitch(diameter);
-thread_for_screw_cuiso_tec(diameter,length,stdpitch,50);
-echo(diameter);echo(stdpitch);
+thread_for_screw_cuiso_tec(diameter,length,stdpitch,divdelta=stddivs);
+//echo(diameter);echo(stdpitch);
 }
 
 module thread_for_nut(diameter, length, usrclearance=0)
@@ -149,9 +181,9 @@ stdpitch=get_std_pitch(diameter);
 stdclearance=get_std_clearance(diameter);
 
 thread_for_nut_cuiso_tec
-(diameter+stdclearance+usrclearance,length,stdpitch,50,entry=1);
+(diameter+stdclearance+usrclearance,length,stdpitch,divdelta=stddivs,entry=1);
     
-echo(diameter);echo(stdpitch);echo(stdclearance+usrclearance);
+//echo(diameter);echo(stdpitch);echo(stdclearance+usrclearance);
 }
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -273,11 +305,17 @@ h=p*0.866;
 pp=p/2;
 pm=-p/2;
 hh=r-h;
+g=0.001;
 
-polyhedron([
-    [0,0,pp],[hh,0,pp],[r-h/8,0,p/16],[r-h/8,0,-p/16],[hh,0,pm],[0,0,pm]
+rotate([90,0,0])
+linear_extrude(height = g, center = true, convexity = 10){
+polygon([
+    [0,pp],[hh,pp],[r-h/8,p/16],[r-h/8,-p/16],[hh,pm],[0,pm]
     ], 
-    [[0,1,2,3,4,5]]);
+    [
+    [0,1,2,3,4,5]
+    ]);
+}
 }
 
 module pieza_nut(diameter, p)
@@ -287,5 +325,15 @@ h=p*0.866;
 pp=p/2;
 pm=-p/2;
 hh=r-h;
-polyhedron([[0,0,pp],[hh,0,pp],[r,0,0],[hh,0,pm],[0,0,pm]], [[0,1,2,3,4]]);
+g=0.001;
+    
+rotate([90,0,0])
+linear_extrude(height = g, center = true, convexity = 10){
+polygon([
+    [0,pp],[hh,pp],[r,0],[hh,pm],[0,pm]
+    ], 
+    [
+    [0,1,2,3,4]
+    ]);
+}
 }

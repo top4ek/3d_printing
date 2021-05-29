@@ -18,7 +18,7 @@ module body() {
     }
     translate([7.5,18,7.5])
       rotate([90,0,0])
-        cylinder(h = 10, d = 3.5);
+        cylinder(h = 10, d = 4);
   }
 }
 

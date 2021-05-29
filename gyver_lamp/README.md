@@ -12,6 +12,9 @@ Housing for matrix lamp (aka [Gyver lamp](https://alexgyver.ru/gyverlamp))
 * [TTP223 sensor](https://aliexpress.ru/item/32788526867.html)
 * [Jack](https://aliexpress.ru/item/32862730556.html)
 * Wires
-* Capacitor.
+* Capacitor 10µ, 10v (not mandatory, but highly recommended)
 
 [Firmware](https://github.com/CODeRUS/GyverLampCpp) I'm using.
+
+# Printing info:
+Shader should be printed vaze mode. Do not use transparent filaments, White PETg will be okay. Or you'll need some kind of paper diffusor placed inside.
